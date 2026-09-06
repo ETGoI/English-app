@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gemini 英語フレーズ学習アプリ</title>
+  <title>英語フレーズ学習アプリ</title>
   <style>
     :root {
       --primary: #4f46e5;
+      --primary-hover: #4338ca;
       --bg: #f3f4f6;
       --card-bg: #ffffff;
       --text: #1f2937;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
@@ -27,8 +28,13 @@
       flex-direction: column;
       gap: 16px;
     }
-    h1 { font-size: 1.3rem; text-align: center; margin: 8px 0; color: var(--primary); }
-    .config-section, .input-section {
+    h1 {
+      font-size: 1.3rem;
+      text-align: center;
+      margin: 8px 0;
+      color: var(--primary);
+    }
+    .input-section {
       background: var(--card-bg);
       padding: 16px;
       border-radius: 12px;
@@ -37,8 +43,12 @@
       flex-direction: column;
       gap: 10px;
     }
-    label { font-size: 0.85rem; font-weight: bold; color: #4b5563; }
-    input[type="text"], input[type="password"] {
+    label {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #4b5563;
+    }
+    input[type="text"] {
       width: 100%;
       padding: 12px;
       border: 1px solid #d1d5db;
@@ -46,7 +56,11 @@
       font-size: 0.95rem;
       box-sizing: border-box;
     }
-    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
     button {
       background-color: var(--primary);
       color: white;
@@ -56,11 +70,19 @@
       font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
     }
-    button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+    button:active {
+      transform: scale(0.98);
+    }
     .btn-secondary { background-color: #0b9f6e; }
     .btn-add { background-color: #d97706; }
-    .card-list { display: flex; flex-direction: column; gap: 12px; }
+    
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
     .card {
       background: var(--card-bg);
       padding: 16px;
@@ -70,10 +92,31 @@
       flex-direction: column;
       gap: 8px;
     }
-    .ja-text { font-size: 0.9rem; color: #4b5563; font-weight: 600; }
-    .en-container { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .en-text { font-size: 1.1rem; font-weight: bold; color: var(--text); flex-grow: 1; cursor: pointer; }
-    .en-text.hidden { filter: blur(6px); user-select: none; background: #e5e7eb; color: transparent; border-radius: 4px; }
+    .ja-text {
+      font-size: 0.9rem;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    .en-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .en-text {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--text);
+      flex-grow: 1;
+      cursor: pointer;
+    }
+    .en-text.hidden {
+      filter: blur(6px);
+      user-select: none;
+      background: #e5e7eb;
+      color: transparent;
+      border-radius: 4px;
+    }
     .audio-btn {
       background: #e0e7ff;
       color: var(--primary);
@@ -85,32 +128,25 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      flex-shrink: 0;
       font-size: 1.1rem;
     }
-    .loading { text-align: center; color: #4f46e5; font-weight: bold; padding: 20px; background: var(--card-bg); border-radius: 12px; }
-    .hint { font-size: 0.75rem; color: #6b7280; margin-top: -4px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>👨‍🏫 Gemini 英会話フレーズ先生</h1>
-  
-  <div class="config-section">
-    <label for="apiKeyInput">Gemini APIキー設定</label>
-    <input type="password" id="apiKeyInput" placeholder="APIキー（スペースなしで入力）">
-    <div class="hint">※入力するとブラウザに自動保存されます</div>
-  </div>
+  <h1>👨‍🏫 英会話フレーズ先生</h1>
 
   <div class="input-section">
     <label for="sceneInput">試したい場面・シチュエーション</label>
-    <input type="text" id="sceneInput" placeholder="例: 宇宙ステーションで会話する" value="海外のカフェでコーヒーを頼む">
+    <input type="text" id="sceneInput" placeholder="例: 海外のカフェでコーヒーを頼む" value="海外のカフェでコーヒーを頼む">
     
     <button id="mainBtn" onclick="generatePhrases(10)">✨ 先生に作ってもらう (10個)</button>
     
     <div class="btn-group">
       <button class="btn-secondary" id="testBtn" onclick="toggleTestMode()" style="display:none;">🎲 ランダム出題 (テスト)</button>
-      <button class="btn-add" id="addBtn" onclick="generatePhrases(5, true)" style="display:none;">➕ もっと追加</button>
+      <button class="btn-add" id="addBtn" onclick="addMorePhrases()" style="display:none;">➕ もっと追加</button>
     </div>
   </div>
 
@@ -121,98 +157,74 @@
   let currentPhrases = [];
   let isTestMode = false;
 
-  window.onload = () => {
-    const savedKey = localStorage.getItem("gemini_api_key");
-    if (savedKey) {
-      document.getElementById("apiKeyInput").value = savedKey;
-    }
+  // 内蔵フレーズデータベース
+  const database = {
+    cafe: [
+      { en: "Can I get a coffee, please?", ja: "コーヒーを1ついただけますか？" },
+      { en: "I'd like an iced latte.", ja: "アイスラテをお願いします。" },
+      { en: "To go, please.", ja: "持ち帰りでお願いします。" },
+      { en: "For here, please.", ja: "店内を利用します。" },
+      { en: "What do you recommend?", ja: "おすすめは何ですか？" },
+      { en: "Can I get oat milk instead?", ja: "オーツミルクに変更できますか？" },
+      { en: "Less ice, please.", ja: "氷少なめでお願いします。" },
+      { en: "Do you have Wi-Fi here?", ja: "Wi-Fiはありますか？" },
+      { en: "Where is the restroom?", ja: "お手洗いはどこですか？" },
+      { en: "Can I pay with credit card?", ja: "カードで払えますか？" },
+      { en: "Could I have a receipt?", ja: "領収書をいただけますか？" },
+      { en: "Is this seat taken?", ja: "この席は空いていますか？" },
+      { en: "That's all, thank you.", ja: "以上でお願いします。" },
+      { en: "One size smaller, please.", ja: "1つ小さいサイズでお願いします。" }
+    ],
+    default: [
+      { en: "Excuse me, do you have a minute?", ja: "すみません、少しお時間よろしいですか？" },
+      { en: "Could you help me, please?", ja: "助けていただけますか？" },
+      { en: "How much does this cost?", ja: "これはいくらですか？" },
+      { en: "Where can I find this?", ja: "これはどこにありますか？" },
+      { en: "Thank you for your help.", ja: "助けてくれてありがとうございます。" },
+      { en: "Sorry to bother you.", ja: "お邪魔してすみません。" },
+      { en: "Could you speak a bit slower?", ja: "もう少しゆっくり話していただけますか？" },
+      { en: "I'm looking for this place.", ja: "ここを探しているのですが。" },
+      { en: "Is it okay if I take photos?", ja: "写真を撮っても大丈夫ですか？" },
+      { en: "Have a nice day!", ja: "良い一日を！" },
+      { en: "Where is the nearest station?", ja: "一番近い駅はどこですか？" },
+      { en: "No problem at all.", ja: "全然問題ありませんよ。" },
+      { en: "Can you write it down here?", ja: "ここに書いていただけますか？" }
+    ]
   };
 
-  async function generatePhrases(count = 10, isAppend = false) {
-    // 前後の余計なスペースを完全に除去
-    const apiKey = document.getElementById("apiKeyInput").value.trim().replace(/\s+/g, '');
-    const scene = document.getElementById("sceneInput").value.trim();
+  // 1. フレーズ作成
+  function generatePhrases(count = 10) {
+    const input = document.getElementById("sceneInput").value.trim();
+    if (!input) return alert("場面を入力してください");
 
-    if (!apiKey) {
-      alert("まずはGemini APIキーを入力してください。");
-      return;
-    }
-    if (!scene) {
-      alert("場面（シチュエーション）を入力してください。");
-      return;
-    }
+    const pool = (input.includes("カフェ") || input.includes("コーヒー")) ? database.cafe : database.default;
+    currentPhrases = [...pool].sort(() => 0.5 - Math.random()).slice(0, count);
 
-    localStorage.setItem("gemini_api_key", apiKey);
-
-    const mainBtn = document.getElementById("mainBtn");
-    const addBtn = document.getElementById("addBtn");
-    const testBtn = document.getElementById("testBtn");
-    const container = document.getElementById("cardContainer");
-
-    mainBtn.disabled = true;
-    addBtn.disabled = true;
-
-    if (!isAppend) {
-      container.innerHTML = '<div class="loading">🤖 AIがフレーズを考えています...<br><small>少々お待ちください</small></div>';
-      currentPhrases = [];
-    }
-
-    const existingPhrases = currentPhrases.map(p => p.en).join(", ");
-    
-    const prompt = `場面: 「${scene}」
-このシチュエーションでよく使う短く自然な英語表現を${count}個作成してください。
-${isAppend ? `※以下の表現とは被らない新しい表現を出力してください:\n${existingPhrases}` : ""}
-
-必ず以下のJSON配列形式のみで返答してください。Markdown装飾や余計な文字は一切含めないでください。
-[
-  {"en": "English phrase", "ja": "日本語訳"}
-]`;
-
-    try {
-      // 一番安定している gemini-1.5-flash に変更
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API Error Detail:", errorData);
-        throw new Error(`エラーが発生しました (Status: ${response.status})`);
-      }
-
-      const data = await response.json();
-      let rawText = data.candidates[0].content.parts[0].text;
-      
-      // JSON文字のクリーンアップ処理
-      rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-      const newPhrases = JSON.parse(rawText);
-
-      if (isAppend) {
-        currentPhrases = [...currentPhrases, ...newPhrases];
-      } else {
-        currentPhrases = newPhrases;
-      }
-
-      addBtn.style.display = "block";
-      testBtn.style.display = "block";
-      isTestMode = false;
-      renderCards();
-
-    } catch (err) {
-      console.error(err);
-      alert("AIフレーズの生成に失敗しました。APIキーまたはネットワーク接続を確認してください。");
-      if (!isAppend) container.innerHTML = "";
-    } finally {
-      mainBtn.disabled = false;
-      addBtn.disabled = false;
-    }
+    document.getElementById("addBtn").style.display = "block";
+    document.getElementById("testBtn").style.display = "block";
+    isTestMode = false;
+    renderCards();
   }
 
+  // 2. もっと追加
+  function addMorePhrases() {
+    const input = document.getElementById("sceneInput").value.trim();
+    const pool = (input.includes("カフェ") || input.includes("コーヒー")) ? database.cafe : database.default;
+    
+    const existingEn = currentPhrases.map(p => p.en);
+    const available = pool.filter(p => !existingEn.includes(p.en));
+
+    if (available.length === 0) {
+      alert("これ以上追加できるフレーズがありません");
+      return;
+    }
+
+    const newItems = available.sort(() => 0.5 - Math.random()).slice(0, 5);
+    currentPhrases = [...currentPhrases, ...newItems];
+    renderCards();
+  }
+
+  // 3. カード描画処理
   function renderCards() {
     const container = document.getElementById("cardContainer");
     container.innerHTML = "";
@@ -235,6 +247,7 @@ ${isAppend ? `※以下の表現とは被らない新しい表現を出力して
     });
   }
 
+  // 4. 音声読み上げ
   function speak(text) {
     window.speechSynthesis.cancel();
     const uttr = new SpeechSynthesisUtterance(text);
@@ -243,6 +256,7 @@ ${isAppend ? `※以下の表現とは被らない新しい表現を出力して
     window.speechSynthesis.speak(uttr);
   }
 
+  // 5. ランダムテストモード
   function toggleTestMode() {
     if (currentPhrases.length === 0) return;
     currentPhrases.sort(() => Math.random() - 0.5);
@@ -250,6 +264,7 @@ ${isAppend ? `※以下の表現とは被らない新しい表現を出力して
     renderCards();
   }
 
+  // モザイク解除
   function toggleBlur(index) {
     const el = document.getElementById(`en-${index}`);
     if (el) el.classList.toggle("hidden");
